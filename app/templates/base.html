@@ -4,43 +4,205 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CCI SurveyHUB</title>
-    <!-- Bootstrap CDN -->
+    <!-- Clean Google Font to match Figma's modern UI type -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS Framework -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <!-- Bootstrap Icons Font Library -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Main Style Overrides Sheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}?v=2">
+    <style>
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 14px 18px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 280px;
+            max-width: 360px;
+            font-size: 13px;
+            font-weight: 500;
+            animation: slideInToast 0.4s ease-out;
+            border-left: 4px solid;
+        }
+        .toast.danger { border-left-color: #ef4444; color: #991b1b; }
+        .toast.success { border-left-color: #10b981; color: #065f46; }
+        .toast.warning { border-left-color: #f59e0b; color: #92400e; }
+        .toast.info { border-left-color: #3b82f6; color: #1e40af; }
+        .toast-close {
+            margin-left: auto;
+            cursor: pointer;
+            color: #9ca3af;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+        .toast-close:hover { color: #374151; }
+        @keyframes slideInToast {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOutToast {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(100%); }
+        }
+        .toast.hiding {
+            animation: fadeOutToast 0.3s ease-in forwards;
+        }
+    </style>
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="/">CCI SurveyHUB</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="/">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/surveys">Surveys</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/exports">Exports</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-                </ul>
+    <div class="app-layout-wrapper">
+        
+        <!-- =========================================================
+             SIDEBAR COMPONENT 
+             ========================================================= -->
+        <nav id="sidebar-panel">
+            <!-- Top Branding Frame -->
+            <div class="sidebar-branding">
+                <div class="brand-icon-box">
+                    <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                </div>
+                <div class="brand-text-box">
+                    <span class="brand-title">SurveyHUB</span>
+                    <span class="brand-subtitle">CHAMBER OF COMMERCE</span>
+                </div>
             </div>
+
+            <!-- Main Navigation Links -->
+            <div class="sidebar-menu-links">
+                <a href="/" class="menu-item {{ 'active' if request.endpoint == 'dashboard.index' else '' }}">
+                    <i class="bi bi-grid-1x2-fill"></i> Dashboard
+                </a>
+                <a href="/surveys" class="menu-item {{ 'active' if request.endpoint == 'surveys.survey_list' else '' }}">
+                    <i class="bi bi-card-text"></i> Surveys
+                </a>
+                <a href="/anomalies" class="menu-item {{ 'active' if request.endpoint == 'dashboard.anomalies' else '' }}">
+                    <i class="bi bi-exclamation-triangle-fill"></i> Anomalies
+                </a>
+                <a href="/exports" class="menu-item {{ 'active' if request.endpoint == 'exports.export_index' else '' }}">
+                    <i class="bi bi-download"></i> Exports
+                </a>
+            </div>
+
+            <!-- Bottom User Profile Card Frame -->
+            <div class="sidebar-footer-profile">
+                <div class="profile-meta-row">
+                    <div class="profile-avatar">{{ current_user.name[:2]|upper if current_user.is_authenticated else 'AU' }}</div>
+                    <div class="profile-identity">
+                        <span class="user-fullname">{{ current_user.name if current_user.is_authenticated else 'Admin User' }}</span>
+                        <span class="user-role-title">{{ current_user.role|title if current_user.is_authenticated else 'System Overseer' }}</span>
+                    </div>
+                </div>
+                <a href="{{ url_for('auth.logout') }}" class="logout-action-trigger">
+                    <i class="bi bi-box-arrow-left"></i> Logout
+                </a>
+            </div>
+        </nav>
+
+        <!-- =========================================================
+             CONTENT WORKSPACE WRAPPER
+             ========================================================= -->
+        <div id="main-content-workspace">
+            
+            <!-- =========================================================
+                 TOPBAR COMPONENT
+                 ========================================================= -->
+            <header id="top-action-bar">
+                <div class="top-bar-left-nexus">
+                    <h1 class="project-identity-heading">CCI SurveyHUB</h1>
+                    <div class="global-search-container">
+                        <i class="bi bi-search search-icon-indicator"></i>
+                        <input type="text" class="topbar-search-input" placeholder="Search surveys or responses...">
+                    </div>
+                </div>
+                
+                <!-- Utility Icons Node -->
+                <div class="top-bar-right-utilities">
+                    <div class="utility-icon-wrapper notification-alert-active">
+                        <i class="bi bi-bell"></i>
+                    </div>
+                    <div class="utility-icon-wrapper">
+                        <i class="bi bi-gear"></i>
+                    </div>
+                    <div class="utility-icon-wrapper">
+                        <i class="bi bi-grid-3x3-gap"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dynamic Sub-page Mounting Point -->
+            <main class="inner-workspace-container">
+                {% block content %}{% endblock %}
+            </main>
+            
         </div>
-    </nav>
-
-    <!-- Main Content -->
-    <div class="container-fluid mt-4">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        {% block content %}{% endblock %}
     </div>
 
-    <!-- Bootstrap JS -->
+    <!-- Global Loading Spinner -->
+    {% include "components/_spinner.html" %}
+
+    <!-- Bootstrap Core Bundle JS Dependency -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <!-- Main Application Script -->
+    <script src="{{ url_for('static', filename='js/main.js') }}?v=2"></script>
+    <script>
+        // Toast notifications
+        const flashMessages = [
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        {category: {{ category|tojson }}, message: {{ message|tojson }}}{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        ];
+        console.log('Flash messages:', flashMessages);
+
+        function showToast(category, message) {
+            console.log('Showing toast:', category, message);
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${category}`;
+            const iconMap = {
+                'success': 'bi-check-circle-fill',
+                'danger': 'bi-exclamation-circle-fill',
+                'warning': 'bi-exclamation-triangle-fill',
+                'info': 'bi-info-circle-fill'
+            };
+            toast.innerHTML = `
+                <i class="bi ${iconMap[category] || 'bi-info-circle-fill'}"></i>
+                <span>${message}</span>
+                <i class="bi bi-x-lg toast-close" onclick="this.parentElement.classList.add('hiding'); setTimeout(() => this.parentElement.remove(), 300);"></i>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('hiding');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        if (flashMessages.length > 0) {
+            flashMessages.forEach(f => showToast(f.category, f.message));
+        } else {
+            console.log('No flash messages to display');
+        }
+    </script>
+
+    <!-- Toast Container (moved to end for highest stacking) -->
+    <div class="toast-container" id="toast-container"></div>
 </body>
 </html>

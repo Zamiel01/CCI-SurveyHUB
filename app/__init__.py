@@ -29,6 +29,23 @@ def create_app():
     app.register_blueprint(exports)
 
     with app.app_context():
+        from app.models.user import User
+        from app.models.survey import Survey, Block, Question, Choice
+        from app.models.response import Company, Response, Answer
+        from app.models.anomaly import Anomaly
         db.create_all()
+
+        # Seed default admin user if not exists
+        if not User.query.filter_by(email='jean.dupont@cci.fr').first():
+            admin = User(
+                name='Jean Dupont',
+                email='jean.dupont@cci.fr',
+                role='admin',
+                active=True
+            )
+            admin.set_password('admin123')
+            db.session.add(admin)
+            db.session.commit()
+            app.logger.info('Seeded default admin user: jean.dupont@cci.fr')
 
     return app
