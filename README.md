@@ -184,6 +184,23 @@ See `documentation/user_guide.md` for full usage instructions.
 
 ---
 
+## Daily Progress Log
+
+### Day 6 — Authentication (Login & Session Management)
+
+- Built the login form with Flask-Login integration
+- Wrote the login route to authenticate against the users table using werkzeug password checking
+- Protected all internal routes with `@login_required`
+- Built the logout route to clear the session
+- Test login with seeded users: `jean.dupont@cci.fr` / `admin123`
+- Redirect unauthenticated users to `/login`
+- Show error message on wrong credentials
+- Added toast notifications for flash messages (success, error, info)
+- Fixed flash message isolation between login and register tabs
+- Implemented "Remember me" functionality for session persistence
+
+---
+
 ## Team
 
 | Person | Responsibility |
