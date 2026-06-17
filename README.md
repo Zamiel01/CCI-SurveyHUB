@@ -28,6 +28,7 @@ This application brings everything into one place:
 |-------|------------|
 | Backend | Python Flask |
 | Database | SQLite + Flask-SQLAlchemy |
+| Authentication | Flask-Login + Werkzeug password hashing |
 | Frontend | HTML, CSS, Bootstrap 5, JavaScript |
 | Data Processing | Pandas |
 | Charts | Chart.js |
@@ -40,28 +41,28 @@ This application brings everything into one place:
 ```
 CCI-SurveyHUB/
 ├── app/
-│   ├── __init__.py          # App factory
+│   ├── __init__.py          # App factory, blueprint registration
 │   ├── routes/
-│   │   ├── auth.py          # Login and logout
-│   │   ├── dashboard.py     # Main dashboard
-│   │   ├── surveys.py       # Survey creation and management
-│   │   ├── questions.py     # Blocks and questions
-│   │   ├── responses.py     # Public response form
-│   │   ├── exports.py       # CSV and Excel exports
+│   │   ├── auth.py          # Login and logout (Flask-Login)
+│   │   ├── dashboard.py     # Main dashboard — real DB queries
+│   │   ├── surveys.py       # Survey list, builder, blocks, questions, choices, publish
+│   │   ├── responses.py     # Public response form (token-based access)
+│   │   ├── exports.py       # CSV and Excel exports (Week 4)
 │   ├── models/
 │   │   ├── user.py          # Users table
 │   │   ├── survey.py        # Surveys, blocks, questions, choices
 │   │   ├── response.py      # Companies, responses, answers
 │   │   ├── anomaly.py       # Anomalies table
 │   ├── templates/
-│   │   ├── base.html        # Base layout with navbar
+│   │   ├── base.html        # Base layout with sidebar and navbar
 │   │   ├── login.html       # Login page
-│   │   ├── dashboard.html   # Dashboard
-│   │   ├── surveys.html     # Survey list
-│   │   ├── create_survey.html
-│   │   ├── preview.html     # Survey preview
-│   │   ├── results.html     # Results and charts
-│   │   ├── anomalies.html   # Anomalies management
+│   │   ├── dashboard.html   # Dashboard wired to real data
+│   │   ├── surveys.html     # Survey list with filters and pagination
+│   │   ├── create_survey.html  # Survey builder — blocks, questions, choices
+│   │   ├── preview.html     # Survey preview (real nested data)
+│   │   ├── public_survey.html  # Public-facing response form
+│   │   ├── results.html     # Results and charts (Week 4)
+│   │   ├── anomalies.html   # Anomalies management (Week 3)
 │   ├── static/
 │   │   ├── css/
 │   │   │   └── main.css
@@ -72,6 +73,9 @@ CCI-SurveyHUB/
 │   ├── user_guide.md
 │   ├── installation.md
 │   └── bug_tracking.md
+├── instance/
+│   └── surveyhub.db         # SQLite database (gitignored)
+├── seed.py                  # Database seed script — dummy data
 ├── requirements.txt
 ├── run.py
 └── .gitignore
@@ -81,21 +85,35 @@ CCI-SurveyHUB/
 
 ## Features
 
+### Authentication
+- Login page with email and password
+- Session management via Flask-Login
+- All internal pages protected with `@login_required`
+- Logout clears the session and redirects to login
+- Active/inactive user accounts supported via `is_active` flag
+
 ### Survey Management
 - Create surveys with title, description, objective and target audience
 - Organise questions into blocks for better structure
 - Add multiple-choice questions with predefined answer choices
-- Preview survey before publishing
-- Generate unique public link on publish
+- Add, edit and remove answer choices per question
+- Preview survey with real nested data before publishing
+- Generate unique public link on publish (`public_token`)
 - Track survey status: Draft → Published → Closed → Archived
+- Filter survey list by status (All / Published / Draft / Closed)
+- Paginated survey list
+- Delete protection — surveys with existing responses cannot be deleted
 
 ### Data Collection
-- Public response form accessible without login
-- Companies fill in their information and answer questions
-- Responses stored in a clean relational database
+- Public response form accessible without login via `/survey/<token>`
+- Token-based access — only published surveys are reachable
+- Companies fill in their information (name, SIRET, email, phone) 
+  and answer questions
+- Client-side required field validation on the public form
+- Submit route stubbed and ready for Week 3 data persistence logic
 
-### Data Quality Control
-Automatic validation runs on every submission:
+### Data Quality Control (Planned — Week 3)
+Automatic validation will run on every submission:
 
 | Field | Rule |
 |-------|------|
@@ -105,23 +123,24 @@ Automatic validation runs on every submission:
 | Required fields | Cannot be empty |
 | Duplicates | Detected by matching SIRET |
 
-All issues are logged to the anomalies table and visible on the anomalies page.
+All issues will be logged to the anomalies table and visible on the anomalies page.
 
 ### Dashboard
-- Total surveys created
+- Total surveys created (real count from database)
 - Published surveys count
 - Total responses received
 - Incomplete records count
 - Potential duplicates count
-- Latest responses feed
+- Latest responses feed (5 most recent)
+- Response volume chart (Chart.js — Week 4)
 
-### Results and Analysis
+### Results and Analysis (Planned — Week 4)
 - Response count per survey
 - Answer distribution per question
 - Bar charts and pie charts via Chart.js
 - Most selected choices highlighted
 
-### Exports
+### Exports (Planned — Week 4)
 - All responses (CSV or Excel)
 - Clean responses only
 - Anomalies report
@@ -146,6 +165,21 @@ All issues are logged to the anomalies table and visible on the anomalies page.
 | answers | Selected choices per response |
 | anomalies | Detected data quality issues |
 
+### Schema Notes
+
+- `surveys.public_token` stores the unique token used to build the 
+  shareable public link, generated only when a survey is published
+- `anomalies.company_id` allows direct querying of anomalies by 
+  company without joining through responses
+- `anomalies.resolved_at` and `resolved_by` provide an audit trail 
+  for resolved data quality issues
+- `answers.text_value` supports future open-ended question types 
+  in addition to predefined choice selections
+- `users.active` (note: not `is_active`) tracks whether a user 
+  account is enabled — renamed from the original schema design 
+  to avoid a naming conflict with Flask-Login's `UserMixin.is_active` 
+  property
+
 ---
 
 ## Installation
@@ -161,9 +195,17 @@ python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
 python run.py
+python seed.py
 ```
 
 Then open `http://127.0.0.1:5000` in your browser.
+
+**Seeded test accounts:**
+
+| Email | Password | Role |
+|-------|----------|------|
+| jean.dupont@cci.fr | admin123 | admin |
+| marie.curie@cci.fr | user123 | user |
 
 ---
 
@@ -178,11 +220,21 @@ See `documentation/user_guide.md` for full usage instructions.
 | Week | Focus | Status |
 |------|-------|--------|
 | Week 1 | Project setup, structure, database schema | ✅ Complete |
-| Week 2 | Survey creation module, admin space | 🔄 In Progress |
-| Week 3 | Public response form, validation, anomalies | ⏳ Pending |
+| Week 2 | Authentication, dashboard, survey builder, preview, publish | ✅ Complete |
+| Week 3 | Public response collection, validation, anomalies | ⏳ Pending |
 | Week 4 | Results, charts, exports, final demo | ⏳ Pending |
 
+### Week 2 Summary
 
+| Day | Focus | Outcome |
+|-----|-------|---------|
+| Day 6 | Authentication | Login/logout working with Flask-Login, routes protected |
+| Day 7 | Dashboard | Real database queries replacing static dummy numbers |
+| Day 8 | Survey List | Functional status filters, pagination, delete protection |
+| Day 9 | Survey Builder | Create survey, add blocks, add questions, add choices — full CRUD |
+| Day 10 | Preview + Publish | Real nested preview rendering, publish route with token generation, public survey page wired to database |
+
+---
 
 ## Team
 
