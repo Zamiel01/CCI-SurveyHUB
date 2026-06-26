@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, request, redirect, url_for
-from flask_login import login_required
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask_login import login_required, current_user
 from app import db
 from app.models.survey import Survey
 from app.models.response import Response, Company
@@ -73,4 +73,45 @@ def index():
 @dashboard.route('/anomalies')
 @login_required
 def anomalies():
-    return render_template('anomalies.html')
+    # Filter params
+    status_filter = request.args.get('status', '', type=str)
+    issue_filter = request.args.get('issue_type', '', type=str)
+    page = request.args.get('page', 1, type=int)
+    per_page = 5
+    
+    # Build query
+    query = Anomaly.query.order_by(Anomaly.created_at.desc())
+    
+    # Apply status filter
+    if status_filter in ['open', 'resolved']:
+        query = query.filter_by(status=status_filter)
+    
+    # Apply issue type filter
+    valid_issues = ['invalid_format', 'too_short', 'duplicate', 'missing_value']
+    if issue_filter in valid_issues:
+        query = query.filter_by(issue_type=issue_filter)
+    
+    # Paginate
+    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+    
+    return render_template(
+        'anomalies.html',
+        anomalies=pagination.items,
+        page=page,
+        total_pages=pagination.pages,
+        total_anomalies=pagination.total,
+        current_status=status_filter,
+        current_issue=issue_filter,
+        valid_issues=valid_issues
+    )
+
+@dashboard.route('/anomalies/<int:id>/resolve', methods=['POST'])
+@login_required
+def resolve_anomaly(id):
+    anomaly = Anomaly.query.get_or_404(id)
+    anomaly.status = 'resolved'
+    anomaly.resolved_at = datetime.utcnow()
+    anomaly.resolved_by = current_user.id
+    db.session.commit()
+    flash('Anomaly marked as resolved.', 'success')
+    return redirect(url_for('dashboard.anomalies'))

@@ -21,3 +21,39 @@ function hideSurveyLoader() {
 
 // Quick developer test route check (Runs loop inside your console log setup)
 // Open browser inspect panel, type: showSurveyLoader("Export Engine Active", "Parsing with Pandas...")
+
+// Chart.js rendering for results page
+document.addEventListener('DOMContentLoaded', function() {
+    const charts = document.querySelectorAll('[data-chart-question]');
+    charts.forEach(canvas => {
+        const labels = JSON.parse(canvas.dataset.labels);
+        const values = JSON.parse(canvas.dataset.values);
+        
+        new Chart(canvas, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Responses',
+                    data: values,
+                    backgroundColor: '#3b82f6',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { 
+                        beginAtZero: true, 
+                        ticks: { stepSize: 1 }
+                    }
+                }
+            }
+        });
+    });
+});

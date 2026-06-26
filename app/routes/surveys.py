@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import login_required, current_user
 from app import db
 from app.models.survey import Survey, Block, Question, Choice
-from app.models.response import Response
+from app.models.response import Response, Answer
 
 surveys = Blueprint('surveys', __name__)
 
@@ -198,6 +198,47 @@ def edit_survey(id):
 @surveys.route('/surveys/<int:id>/results')
 @login_required
 def survey_results(id):
-    # Placeholder for results route - will be implemented later
-    flash('Results feature coming soon.', 'info')
-    return redirect(url_for('surveys.survey_list'))
+    """Display survey results with charts."""
+    survey = Survey.query.get_or_404(id)
+    
+    # Get all responses for this survey
+    responses = Response.query.filter_by(survey_id=survey.id).all()
+    total_responses = len(responses)
+    
+    # Calculate completion rate
+    complete_responses = sum(1 for r in responses if r.completion_status == 'complete')
+    completion_rate = round((complete_responses / total_responses) * 100, 1) if total_responses > 0 else 0
+    
+    # Build results data per question
+    question_results = []
+    
+    for block in survey.blocks:
+        for question in block.questions:
+            # Count answers per choice
+            choice_data = []
+            for choice in question.choices:
+                count = Answer.query.filter_by(
+                    question_id=question.id,
+                    choice_id=choice.id
+                ).count()
+                choice_data.append({
+                    'text': choice.choice_text,
+                    'count': count,
+                    'percentage': round((count / total_responses) * 100, 1) if total_responses > 0 else 0
+                })
+            
+            question_results.append({
+                'question': question,
+                'choice_data': choice_data,
+                'labels': [c['text'] for c in choice_data],
+                'counts': [c['count'] for c in choice_data]
+            })
+    
+    return render_template(
+        'results.html',
+        survey=survey,
+        total_responses=total_responses,
+        complete_responses=complete_responses,
+        completion_rate=completion_rate,
+        question_results=question_results
+    )
