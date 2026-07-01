@@ -158,6 +158,7 @@ with app.app_context():
         target_audience='PME de Douala',
         status='published',
         public_token='a3f9bc12de',
+        form_password='CCI2025',
         created_by=u1.id
     )
     db.session.add(s1)

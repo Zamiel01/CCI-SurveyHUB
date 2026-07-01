@@ -13,6 +13,7 @@ class Survey(db.Model):
     target_audience = db.Column(db.String(200))
     status = db.Column(db.String(20), nullable=False, default='draft')  # draft, published, closed, archived
     public_token = db.Column(db.String(20), unique=True, nullable=True)
+    form_password = db.Column(db.String(100), nullable=True, default=None)
     created_by = db.Column(db.Integer, db.ForeignKey('users.id'))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

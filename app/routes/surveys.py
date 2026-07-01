@@ -80,6 +80,7 @@ def update_survey(id):
     survey.objective = request.form.get('objective', survey.objective).strip()
     survey.target_audience = request.form.get('target_audience', survey.target_audience).strip()
     survey.status = request.form.get('status', survey.status).strip()
+    survey.form_password = request.form.get('form_password', '').strip() or None
     db.session.commit()
     flash('Survey settings saved.', 'success')
     return redirect(url_for('surveys.survey_builder', id=survey.id))

@@ -21,12 +21,14 @@ def create_app():
     from app.routes.surveys import surveys
     from app.routes.responses import responses
     from app.routes.exports import exports
+    from app.routes.assistant import assistant
 
     app.register_blueprint(auth)
     app.register_blueprint(dashboard)
     app.register_blueprint(surveys)
     app.register_blueprint(responses)
     app.register_blueprint(exports)
+    app.register_blueprint(assistant)
 
     with app.app_context():
         from app.models.user import User

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, abort
+from flask import Blueprint, render_template, request, redirect, url_for, flash, abort, session
 from datetime import datetime
 from app import db
 from app.models.survey import Survey
@@ -17,7 +17,18 @@ def public_survey(token):
     survey = Survey.query.filter_by(public_token=token, status='published').first()
     if not survey:
         abort(404)
+    if survey.form_password and not session.get(f'survey_{survey.id}_authenticated'):
+        return render_template('form_password.html', survey=survey)
     return render_template('public_survey.html', survey=survey)
+
+
+@responses.route('/survey/<token>/password', methods=['POST'])
+def survey_password(token):
+    survey = Survey.query.filter_by(public_token=token, status='published').first_or_404()
+    if request.form.get('password') == survey.form_password:
+        session[f'survey_{survey.id}_authenticated'] = True
+        return redirect(url_for('responses.public_survey', token=token))
+    return render_template('form_password.html', survey=survey, error='Incorrect password. Please try again.')
 
 
 @responses.route('/survey/<token>/submit', methods=['POST'])

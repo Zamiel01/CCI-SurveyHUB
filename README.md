@@ -33,6 +33,8 @@ This application brings everything into one place:
 | Data Processing | Pandas |
 | Charts | Chart.js |
 | Exports | Pandas + OpenPyXL |
+| AI Assistant | Google GenAI (Gemini) |
+| Environment | python-dotenv |
 
 ---
 
@@ -45,24 +47,31 @@ CCI-SurveyHUB/
 │   ├── routes/
 │   │   ├── auth.py          # Login and logout (Flask-Login)
 │   │   ├── dashboard.py     # Main dashboard — real DB queries
-│   │   ├── surveys.py       # Survey list, builder, blocks, questions, choices, publish
-│   │   ├── responses.py     # Public response form (token-based access)
-│   │   ├── exports.py       # CSV and Excel exports (Week 4)
+│   │   ├── surveys.py       # Survey list, builder, blocks, questions, choices, publish, results
+│   │   ├── responses.py     # Public response form with password gate (token-based access)
+│   │   ├── exports.py       # CSV and Excel exports
+│   │   ├── assistant.py     # AI assistant (Gemini-powered chat)
+│   ├── utils/
+│   │   ├── export_helper.py # Pandas + OpenPyXL export logic
+│   │   ├── validation.py    # Email, SIRET, phone validators
 │   ├── models/
 │   │   ├── user.py          # Users table
 │   │   ├── survey.py        # Surveys, blocks, questions, choices
 │   │   ├── response.py      # Companies, responses, answers
 │   │   ├── anomaly.py       # Anomalies table
 │   ├── templates/
-│   │   ├── base.html        # Base layout with sidebar and navbar
+│   │   ├── base.html        # Base layout with sidebar, navbar, and AI chat widget
 │   │   ├── login.html       # Login page
 │   │   ├── dashboard.html   # Dashboard wired to real data
 │   │   ├── surveys.html     # Survey list with filters and pagination
-│   │   ├── create_survey.html  # Survey builder — blocks, questions, choices
+│   │   ├── survey_builder.html  # Survey builder — blocks, questions, choices
 │   │   ├── preview.html     # Survey preview (real nested data)
 │   │   ├── public_survey.html  # Public-facing response form
-│   │   ├── results.html     # Results and charts (Week 4)
-│   │   ├── anomalies.html   # Anomalies management (Week 3)
+│   │   ├── form_password.html  # Password gate for protected surveys
+│   │   ├── results.html     # Results and charts
+│   │   ├── anomalies.html   # Anomalies management
+│   │   ├── exports.html     # Export page
+│   │   ├── thank_you.html   # Post-submission thank-you page
 │   ├── static/
 │   │   ├── css/
 │   │   │   └── main.css
@@ -110,7 +119,8 @@ CCI-SurveyHUB/
 - Companies fill in their information (name, SIRET, email, phone) 
   and answer questions
 - Client-side required field validation on the public form
-- Submit route stubbed and ready for Week 3 data persistence logic
+- Response persists company info, answers, and submission timestamp
+- Optional password protection — respondents must enter a password before accessing the form
 
 ### Data Quality Control (Planned — Week 3)
 Automatic validation will run on every submission:
@@ -132,20 +142,34 @@ All issues will be logged to the anomalies table and visible on the anomalies pa
 - Incomplete records count
 - Potential duplicates count
 - Latest responses feed (5 most recent)
-- Response volume chart (Chart.js — Week 4)
+- Response volume chart (Chart.js)
 
-### Results and Analysis (Planned — Week 4)
-- Response count per survey
-- Answer distribution per question
-- Bar charts and pie charts via Chart.js
-- Most selected choices highlighted
+### Results and Analysis
+- Response count per survey with summary cards (total, complete, completion rate)
+- Answer distribution per question displayed in data tables
+- Bar charts via Chart.js for each multiple-choice question
+- Charts auto-generated from collected response data
+- Charts render with responsive layout and clean styling
 
-### Exports (Planned — Week 4)
-- All responses (CSV or Excel)
-- Clean responses only
-- Anomalies report
-- Aggregated statistics
-- Power BI ready file
+### Exports
+- Survey responses exported as CSV or Excel
+- Columns: Company Name, SIRET, Email, Phone, Submitted At, Status, plus one column per question
+- Excel exports have bold header row and auto-filter (Power BI ready)
+- Anomalies report exported as CSV
+- Export buttons available on the Results page and Exports page
+
+### Password Protection
+- Optional password field on each survey
+- Respondents must enter the password before accessing the public form
+- Password gate shows a clean entry screen with error handling
+- Password stored on the survey model — NULL means no protection
+
+### AI Assistant
+- Floating chat widget available on all internal pages
+- Powered by Google Gemini (gemini-2.0-flash)
+- System prompt scoped to CCI SurveyHUB guidance only
+- Markdown-formatted responses with bullet points and bold text
+- Requires authentication — only CCI staff can use it
 
 ---
 
@@ -221,8 +245,8 @@ See `documentation/user_guide.md` for full usage instructions.
 |------|-------|--------|
 | Week 1 | Project setup, structure, database schema | ✅ Complete |
 | Week 2 | Authentication, dashboard, survey builder, preview, publish | ✅ Complete |
-| Week 3 | Public response collection, validation, anomalies | ⏳ Pending |
-| Week 4 | Results, charts, exports, final demo | ⏳ Pending |
+| Week 3 | Public response collection, validation, anomalies | ✅ Complete |
+| Week 4 | Results, charts, exports, password protection, AI assistant | ✅ Complete |
 
 ### Week 2 Summary
 
@@ -233,6 +257,15 @@ See `documentation/user_guide.md` for full usage instructions.
 | Day 8 | Survey List | Functional status filters, pagination, delete protection |
 | Day 9 | Survey Builder | Create survey, add blocks, add questions, add choices — full CRUD |
 | Day 10 | Preview + Publish | Real nested preview rendering, publish route with token generation, public survey page wired to database |
+
+### Week 4 Summary
+
+| Day | Focus | Outcome |
+|-----|-------|---------|
+| Day 14 | Results Page | Charts and data tables per question, summary cards, completion rate |
+| Day 17 | Exports | CSV and Excel exports for responses and anomalies using Pandas + OpenPyXL |
+| Day 18 | Password Protection | Optional survey password, password gate page, session-based access |
+| Day 19 | AI Assistant | Gemini-powered chat widget with markdown rendering, scoped to app guidance |
 
 ---
 
