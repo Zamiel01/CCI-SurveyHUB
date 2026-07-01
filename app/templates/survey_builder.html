@@ -44,13 +44,13 @@
     
     <div class="flex items-center justify-between px-6 lg:px-8 py-4 bg-white border-b border-slate-200 flex-shrink-0">
         <div class="flex items-center text-sm">
-            <a href="{{ url_for('surveys.survey_list') }}" class="text-slate-500 hover:text-slate-800">My Surveys</a>
+            <a href="{{ url_for('surveys.survey_list') }}" class="text-slate-500 hover:text-slate-800">{{ _('My Surveys') }}</a>
             <span class="mx-2 text-slate-300">/</span>
-            <span class="font-medium text-slate-800">Create Survey</span>
+            <span class="font-medium text-slate-800">{{ _('Create Survey') }}</span>
         </div>
         <div class="flex gap-3 items-center">
             <a href="{{ url_for('surveys.preview_survey', id=survey.id) }}" class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-                <i class="far fa-eye"></i> Preview
+                <i class="far fa-eye"></i> {{ _('Preview') }}
             </a>
             
             {% if survey.status == 'published' and survey.public_token %}
@@ -64,12 +64,12 @@
             
             {% if survey.status == 'published' %}
                 <button class="flex items-center gap-2 px-4 py-2 bg-green-600 rounded-md text-sm font-medium text-white cursor-default" disabled>
-                    <i class="fas fa-check"></i> Published
+                    <i class="fas fa-check"></i> {{ _('Published') }}
                 </button>
             {% else %}
-                <form action="{{ url_for('surveys.publish_survey', id=survey.id) }}" method="POST" class="inline" onsubmit="event.preventDefault(); confirmAction('Publish Survey', 'Publish this survey? This will generate a public link.', () => this.submit(), 'Publish', 'btn-primary');">
+                <form action="{{ url_for('surveys.publish_survey', id=survey.id) }}" method="POST" class="inline" onsubmit="event.preventDefault(); confirmAction('{{ _('Publish Survey') }}', '{{ _('Publish this survey? This will generate a public link.') }}', () => this.submit(), '{{ _('Publish') }}', 'btn-primary');">
                     <button type="submit" class="flex items-center gap-2 px-4 py-2 bg-blue-600 rounded-md text-sm font-medium text-white hover:bg-blue-700 transition shadow-sm">
-                        <i class="fas fa-paper-plane"></i> Publish
+                        <i class="fas fa-paper-plane"></i> {{ _('Publish') }}
                     </button>
                 </form>
             {% endif %}
@@ -79,52 +79,52 @@
     <div class="flex flex-col lg:flex-row gap-6 p-6 lg:p-8 flex-1 min-h-0 overflow-hidden">
         
         <aside class="w-full lg:w-80 bg-white border border-slate-200 rounded-lg p-4 shadow-sm flex-shrink-0 h-full overflow-y-auto">
-            <h2 class="text-sm font-semibold text-slate-800 mb-3">Survey Settings</h2>
+            <h2 class="text-sm font-semibold text-slate-800 mb-3">{{ _('Survey Settings') }}</h2>
             
             <form action="{{ url_for('surveys.update_survey', id=survey.id) }}" method="POST" class="space-y-3">
                 <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">Title</label>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">{{ _('Title') }}</label>
                     <input type="text" name="title" class="form-input bg-slate-50" value="{{ survey.title }}" required>
                 </div>
                 
                 <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">Description</label>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">{{ _('Description') }}</label>
                     <textarea name="description" class="form-input bg-slate-50 resize-none h-14">{{ survey.description or '' }}</textarea>
                 </div>
                 
                 <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">Objective</label>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">{{ _('Objective') }}</label>
                     <input type="text" name="objective" class="form-input bg-slate-50" value="{{ survey.objective or '' }}">
                 </div>
                 
                 <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">Target Audience</label>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">{{ _('Target Audience') }}</label>
                     <input type="text" name="target_audience" class="form-input bg-slate-50" value="{{ survey.target_audience or '' }}">
                 </div>
                 
                 <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">Status</label>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">{{ _('Status') }}</label>
                     <select name="status" class="form-input bg-slate-50 font-medium cursor-pointer">
-                        <option value="draft" {{ 'selected' if survey.status == 'draft' else '' }}>Draft</option>
-                        <option value="published" {{ 'selected' if survey.status == 'published' else '' }}>Published</option>
-                        <option value="closed" {{ 'selected' if survey.status == 'closed' else '' }}>Closed</option>
-                        <option value="archived" {{ 'selected' if survey.status == 'archived' else '' }}>Archived</option>
+                        <option value="draft" {{ 'selected' if survey.status == 'draft' else '' }}>{{ _('Draft') }}</option>
+                        <option value="published" {{ 'selected' if survey.status == 'published' else '' }}>{{ _('Published') }}</option>
+                        <option value="closed" {{ 'selected' if survey.status == 'closed' else '' }}>{{ _('Closed') }}</option>
+                        <option value="archived" {{ 'selected' if survey.status == 'archived' else '' }}>{{ _('Archived') }}</option>
                     </select>
                 </div>
                 
                 <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">Response Password (optional)</label>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">{{ _('Response Password (optional)') }}</label>
                     <div class="relative">
-                        <input type="password" name="form_password" id="form_password" class="form-input bg-slate-50 pr-10" value="{{ survey.form_password or '' }}" placeholder="Leave blank for no password">
+                        <input type="password" name="form_password" id="form_password" class="form-input bg-slate-50 pr-10" value="{{ survey.form_password or '' }}" placeholder="{{ _('Leave blank for no password') }}">
                         <button type="button" onclick="togglePasswordVisibility()" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition">
                             <i class="fas fa-eye" id="password-toggle-icon"></i>
                         </button>
                     </div>
-                    <small class="text-xs text-slate-400 mt-1 block">If set, respondents must enter this password to access the form</small>
+                    <small class="text-xs text-slate-400 mt-1 block">{{ _('If set, respondents must enter this password to access the form') }}</small>
                 </div>
                 
                 <button type="submit" class="w-full py-1.5 mt-2 bg-slate-800 hover:bg-slate-900 text-white rounded-md text-sm font-medium transition">
-                    Save Settings
+                    {{ _('Save Settings') }}
                 </button>
             </form>
         </aside>
@@ -137,7 +137,7 @@
                     <div class="flex items-center gap-3">
                         <i class="fas fa-grip-vertical text-slate-400"></i>
                         <h3 class="text-sm font-semibold text-slate-800">{{ block.title }}</h3>
-                        <span class="text-xs text-slate-400 ml-2 bg-slate-100 px-2 py-0.5 rounded-full">{{ block.questions|length }} question{{ 's' if block.questions|length != 1 else '' }}</span>
+                        <span class="text-xs text-slate-400 ml-2 bg-slate-100 px-2 py-0.5 rounded-full">{{ block.questions|length }} {{ ngettext('question', 'questions', block.questions|length) }}</span>
                     </div>
                     <i class="fas fa-chevron-up text-slate-400 chevron-icon"></i>
                 </div>
@@ -147,7 +147,7 @@
                     {% for question in block.questions %}
                     <div class="bg-white border border-slate-200 rounded-md p-4 shadow-sm hover:shadow transition-shadow">
                         <div class="flex justify-between items-start mb-3">
-                            <span class="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded">Question {{ question.position }} · Multiple choice · {{ 'Required' if question.required else 'Optional' }}</span>
+                            <span class="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded">{{ _('Question') }} {{ question.position }} · {{ _('Multiple choice') }} · {{ _('Required') if question.required else _('Optional') }}</span>
                             <div class="flex gap-2 text-slate-400">
                                 <button class="p-1 hover:text-slate-600 hover:bg-slate-100 rounded transition"><i class="far fa-copy"></i></button>
                                 <button class="p-1 hover:text-red-500 hover:bg-red-50 rounded transition"><i class="far fa-trash-alt"></i></button>
@@ -164,7 +164,7 @@
                         </div>
                         
                         <form action="{{ url_for('surveys.add_choice', id=question.id) }}" method="POST" class="mt-4 flex gap-2">
-                            <input type="text" name="choice_text" placeholder="Add a choice..." class="form-input flex-1" required>
+                            <input type="text" name="choice_text" placeholder="{{ _('Add a choice...') }}" class="form-input flex-1" required>
                             <button type="submit" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition">
                                 <i class="fas fa-plus"></i>
                             </button>
@@ -173,9 +173,9 @@
                     {% endfor %}
 
                     <form action="{{ url_for('surveys.add_question', id=block.id) }}" method="POST" class="flex gap-2">
-                        <input type="text" name="text" placeholder="Add a question..." class="form-input flex-1" required>
+                        <input type="text" name="text" placeholder="{{ _('Add a question...') }}" class="form-input flex-1" required>
                         <button type="submit" class="px-4 py-2 border border-dashed border-slate-300 rounded-md text-sm font-medium text-slate-500 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-600 transition bg-white flex items-center gap-2">
-                            <i class="fas fa-plus"></i> Add Question
+                            <i class="fas fa-plus"></i> {{ _('Add Question') }}
                         </button>
                     </form>
                 </div>
@@ -185,10 +185,10 @@
             <form action="{{ url_for('surveys.add_block', id=survey.id) }}" method="POST" class="bg-white border border-slate-200 rounded-lg shadow-sm flex items-center justify-between p-4 hover:bg-slate-50 transition-colors">
                 <div class="flex items-center gap-3 flex-1">
                     <i class="fas fa-grip-vertical text-slate-400"></i>
-                    <input type="text" name="title" placeholder="New block title..." class="form-input flex-1 bg-slate-50" required>
+                    <input type="text" name="title" placeholder="{{ _('New block title...') }}" class="form-input flex-1 bg-slate-50" required>
                 </div>
                 <button type="submit" class="ml-4 px-4 py-2 border-2 border-dashed border-slate-300 rounded-lg text-sm font-medium text-slate-500 hover:bg-blue-50 hover:border-blue-400 hover:text-blue-600 transition flex items-center gap-2">
-                    <i class="fas fa-plus"></i> Add Block
+                    <i class="fas fa-plus"></i> {{ _('Add Block') }}
                 </button>
             </form>
 

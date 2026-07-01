@@ -74,9 +74,7 @@
         <nav id="sidebar-panel">
             <!-- Top Branding Frame -->
             <div class="sidebar-branding">
-                <div class="brand-icon-box">
-                    <i class="bi bi-file-earmark-bar-graph-fill"></i>
-                </div>
+                <img src="{{ url_for('static', filename='assets/logo.jpeg') }}" alt="SurveyHUB Logo" class="brand-logo">
                 <div class="brand-text-box">
                     <span class="brand-title">SurveyHUB</span>
                     <span class="brand-subtitle">CHAMBER OF COMMERCE</span>
@@ -86,30 +84,35 @@
             <!-- Main Navigation Links -->
             <div class="sidebar-menu-links">
                 <a href="/" class="menu-item {{ 'active' if request.endpoint == 'dashboard.index' else '' }}">
-                    <i class="bi bi-grid-1x2-fill"></i> Dashboard
+                    <i class="bi bi-grid-1x2-fill"></i> {{ _('Dashboard') }}
                 </a>
                 <a href="/surveys" class="menu-item {{ 'active' if request.endpoint == 'surveys.survey_list' else '' }}">
-                    <i class="bi bi-card-text"></i> Surveys
+                    <i class="bi bi-card-text"></i> {{ _('Surveys') }}
                 </a>
                 <a href="/anomalies" class="menu-item {{ 'active' if request.endpoint == 'dashboard.anomalies' else '' }}">
-                    <i class="bi bi-exclamation-triangle-fill"></i> Anomalies
+                    <i class="bi bi-exclamation-triangle-fill"></i> {{ _('Anomalies') }}
                 </a>
                 <a href="/exports" class="menu-item {{ 'active' if request.endpoint == 'exports.export_index' else '' }}">
-                    <i class="bi bi-download"></i> Exports
+                    <i class="bi bi-download"></i> {{ _('Exports') }}
                 </a>
             </div>
 
             <!-- Bottom User Profile Card Frame -->
             <div class="sidebar-footer-profile">
+                <form action="{{ url_for('language.toggle_language') }}" method="POST" style="margin: 0;">
+                    <button type="submit" class="btn btn-sm btn-primary w-100" title="{{ _('Switch language') }}" style="font-size: 12px; padding: 6px 12px;">
+                        <i class="bi bi-globe2"></i> {{ _('Switch to') }} {{ 'EN' if session.get('language', 'fr') == 'fr' else 'FR' }}
+                    </button>
+                </form>
                 <div class="profile-meta-row">
                     <div class="profile-avatar">{{ current_user.name[:2]|upper if current_user.is_authenticated else 'AU' }}</div>
                     <div class="profile-identity">
-                        <span class="user-fullname">{{ current_user.name if current_user.is_authenticated else 'Admin User' }}</span>
-                        <span class="user-role-title">{{ current_user.role|title if current_user.is_authenticated else 'System Overseer' }}</span>
+                        <span class="user-fullname">{{ current_user.name if current_user.is_authenticated else _('Admin User') }}</span>
+                        <span class="user-role-title">{{ current_user.role|title if current_user.is_authenticated else _('System Overseer') }}</span>
                     </div>
                 </div>
                 <a href="{{ url_for('auth.logout') }}" class="logout-action-trigger">
-                    <i class="bi bi-box-arrow-left"></i> Logout
+                    <i class="bi bi-box-arrow-left"></i> {{ _('Logout') }}
                 </a>
             </div>
         </nav>
@@ -184,10 +187,10 @@
 
             // Confirm Modal Helper
             window.confirmAction = function(title, message, callback, buttonText, buttonClass) {
-                document.getElementById('confirmModalTitle').textContent = title || 'Confirm Action';
-                document.getElementById('confirmModalBody').textContent = message || 'Are you sure?';
+                document.getElementById('confirmModalTitle').textContent = title || '{{ _("Confirm Action") }}';
+                document.getElementById('confirmModalBody').textContent = message || '{{ _("Are you sure?") }}';
                 const actionBtn = document.getElementById('confirmModalAction');
-                actionBtn.textContent = buttonText || 'Confirm';
+                actionBtn.textContent = buttonText || '{{ _("Confirm") }}';
                 actionBtn.className = 'btn ' + (buttonClass || 'btn-danger');
                 actionBtn.onclick = function () {
                     callback();
@@ -203,15 +206,15 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="confirmModalTitle">Confirm Action</h5>
+                    <h5 class="modal-title" id="confirmModalTitle">{{ _('Confirm Action') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="confirmModalBody">
-                    Are you sure you want to proceed?
+                    {{ _('Are you sure you want to proceed?') }}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" id="confirmModalAction">Confirm</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                    <button type="button" class="btn btn-danger" id="confirmModalAction">{{ _('Confirm') }}</button>
                 </div>
             </div>
         </div>
@@ -391,25 +394,25 @@
         }
     </style>
 
-    <button class="ai-chat-button" onclick="toggleChatPanel()" title="AI Assistant">
+    <button class="ai-chat-button" onclick="toggleChatPanel()" title="{{ _('AI Assistant') }}">
         <i class="bi bi-chat-dots-fill"></i>
     </button>
 
     <div class="ai-chat-panel" id="aiChatPanel">
         <div class="ai-chat-header">
-            <h3><i class="bi bi-robot"></i> AI Assistant</h3>
+            <h3><i class="bi bi-robot"></i> {{ _('AI Assistant') }}</h3>
             <button class="ai-chat-close" onclick="toggleChatPanel()">
                 <i class="bi bi-x-lg"></i>
             </button>
         </div>
         <div class="ai-chat-messages" id="aiChatMessages">
             <div class="ai-message">
-                Hello! I'm your CCI SurveyHUB assistant. How can I help you today?
+                {{ _("Hello! I'm your CCI SurveyHUB assistant. How can I help you today?") }}
             </div>
         </div>
         <div class="ai-chat-input-container">
-            <input type="text" class="ai-chat-input" id="aiChatInput" placeholder="Ask me anything about SurveyHUB..." onkeypress="handleChatKeyPress(event)">
-            <button class="ai-chat-send" id="aiChatSend" onclick="sendMessage()">Send</button>
+            <input type="text" class="ai-chat-input" id="aiChatInput" placeholder="{{ _('Ask me anything about SurveyHUB...') }}" onkeypress="handleChatKeyPress(event)">
+            <button class="ai-chat-send" id="aiChatSend" onclick="sendMessage()">{{ _('Send') }}</button>
         </div>
     </div>
 
@@ -443,7 +446,7 @@
 
             const loadingMsg = document.createElement('div');
             loadingMsg.className = 'ai-message';
-            loadingMsg.textContent = 'Thinking...';
+            loadingMsg.textContent = '{{ _("Thinking...") }}';
             messages.appendChild(loadingMsg);
             messages.scrollTop = messages.scrollHeight;
 
@@ -461,13 +464,13 @@
 
                 const aiMsg = document.createElement('div');
                 aiMsg.className = 'ai-message';
-                aiMsg.innerHTML = marked.parse(data.response || data.error || 'Sorry, I could not process your request.');
+                aiMsg.innerHTML = marked.parse(data.response || data.error || '{{ _("Sorry, I could not process your request.") }}');
                 messages.appendChild(aiMsg);
             } catch (error) {
                 loadingMsg.remove();
                 const errorMsg = document.createElement('div');
                 errorMsg.className = 'ai-message';
-                errorMsg.textContent = 'Sorry, an error occurred. Please try again.';
+                errorMsg.textContent = '{{ _("Sorry, an error occurred. Please try again.") }}';
                 messages.appendChild(errorMsg);
             }
 

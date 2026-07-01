@@ -1,4 +1,5 @@
 import re
+from flask_babel import _
 from app.models.response import Company
 
 
@@ -8,17 +9,17 @@ def validate_email(email):
         return True, ""
     if re.match(r'^[^@]+@[^@]+\.[^@]+$', email):
         return True, ""
-    return False, "Invalid email format"
+    return False, _("Invalid email format")
 
 
 def validate_siret(siret):
     """Required: exactly 14 digits."""
     if not siret:
-        return False, "SIRET is required"
+        return False, _("SIRET is required")
     if not siret.isdigit():
-        return False, "SIRET must contain only digits"
+        return False, _("SIRET must contain only digits")
     if len(siret) != 14:
-        return False, f"SIRET must be exactly 14 digits (got {len(siret)})"
+        return False, _("SIRET must be exactly 14 digits (got %(num)d)", num=len(siret))
     return True, ""
 
 
@@ -28,7 +29,7 @@ def validate_phone(phone):
         return True, ""
     digits_only = re.sub(r'\D', '', phone)
     if len(digits_only) != 10:
-        return False, f"Phone must be 10 digits (got {len(digits_only)})"
+        return False, _("Phone must be 10 digits (got %(num)d)", num=len(digits_only))
     return True, ""
 
 
@@ -36,9 +37,9 @@ def validate_required_fields(company_name, siret):
     """Required fields: company_name and siret must not be empty."""
     errors = {}
     if not company_name or not company_name.strip():
-        errors['company_name'] = "Company name is required"
+        errors['company_name'] = _("Company name is required")
     if not siret or not siret.strip():
-        errors['siret'] = "SIRET is required"
+        errors['siret'] = _("SIRET is required")
     return len(errors) == 0, errors
 
 

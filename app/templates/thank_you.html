@@ -17,10 +17,10 @@
             <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <i class="fas fa-check text-2xl text-green-600"></i>
             </div>
-            <h1 class="text-xl font-bold text-slate-800 mb-2">Thank You!</h1>
-            <p class="text-slate-600 text-sm mb-6">Your response to <strong>{{ survey.title }}</strong> has been received successfully.</p>
+            <h1 class="text-xl font-bold text-slate-800 mb-2">{{ _('Thank You!') }}</h1>
+            <p class="text-slate-600 text-sm mb-6">{{ _('Your response to %(title)s has been received successfully.', title=survey.title) }}</p>
             <a href="{{ url_for('responses.public_survey', token=survey.public_token) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition">
-                <i class="fas fa-redo"></i> Submit Another Response
+                <i class="fas fa-redo"></i> {{ _('Submit Another Response') }}
             </a>
         </div>
     </div>

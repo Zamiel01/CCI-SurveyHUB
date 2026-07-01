@@ -40,8 +40,8 @@
     
     <div class="flex items-center justify-between mb-4 shrink-0">
         <div>
-            <h2 class="text-2xl font-bold text-slate-800">System Overview</h2>
-            <p class="text-sm text-slate-500 mt-0.5">Real-time performance metrics and response tracking.</p>
+            <h2 class="text-2xl font-bold text-slate-800">{{ _('System Overview') }}</h2>
+            <p class="text-sm text-slate-500 mt-0.5">{{ _('Real-time performance metrics and response tracking.') }}</p>
         </div>
     </div>
 
@@ -53,7 +53,7 @@
                 </div>
                 <span class="px-2 py-1 bg-green-50 text-green-600 text-[10px] font-semibold rounded-md">+4%</span>
             </div>
-            <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Total Surveys</p>
+            <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-0.5">{{ _('Total Surveys') }}</p>
             <h3 class="text-2xl font-bold text-slate-800">{{ total_surveys }}</h3>
         </div>
 
@@ -63,7 +63,7 @@
                     <i class="fas fa-upload"></i>
                 </div>
             </div>
-            <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Published Surveys</p>
+            <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-0.5">{{ _('Published Surveys') }}</p>
             <h3 class="text-2xl font-bold text-slate-800">{{ published_surveys }}</h3>
         </div>
 
@@ -74,7 +74,7 @@
                 </div>
                 <span class="px-2 py-1 bg-green-50 text-green-600 text-[10px] font-semibold rounded-md">+12%</span>
             </div>
-            <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Total Responses</p>
+            <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-0.5">{{ _('Total Responses') }}</p>
             <h3 class="text-2xl font-bold text-slate-800">{{ total_responses }}</h3>
         </div>
 
@@ -84,7 +84,7 @@
                     <i class="fas fa-file-excel"></i>
                 </div>
             </div>
-            <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Incomplete Records</p>
+            <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-0.5">{{ _('Incomplete Records') }}</p>
             <h3 class="text-2xl font-bold text-slate-800">{{ incomplete_records }}</h3>
         </div>
 
@@ -94,7 +94,7 @@
                     <i class="fas fa-copy"></i>
                 </div>
             </div>
-            <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Potential Duplicates</p>
+            <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-0.5">{{ _('Potential Duplicates') }}</p>
             <h3 class="text-2xl font-bold text-slate-800">{{ potential_duplicates }}</h3>
         </div>
     </div>
@@ -104,8 +104,8 @@
         <div class="bg-white rounded-xl border border-slate-100 shadow-sm flex flex-col w-2/3 min-h-0">
             <div class="p-4 border-b border-slate-100 flex justify-between items-center shrink-0">
                 <div>
-                    <h3 class="text-base font-bold text-slate-800">Latest Responses</h3>
-                    <p class="text-xs text-slate-500 mt-0.5">Recently submitted data from active regional surveys.</p>
+                    <h3 class="text-base font-bold text-slate-800">{{ _('Latest Responses') }}</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">{{ _('Recently submitted data from active regional surveys.') }}</p>
                 </div>
             </div>
             
@@ -113,11 +113,11 @@
                 <table class="w-full text-left border-collapse">
                     <thead class="sticky top-0 bg-slate-50 z-10 shadow-[0_1px_0_#e2e8f0]">
                         <tr class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-                            <th class="py-2.5 px-3 pl-5 bg-slate-50">Company Name</th>
-                            <th class="py-2.5 px-3 bg-slate-50">Survey</th>
-                            <th class="py-2.5 px-3 bg-slate-50">Submitted At</th>
-                            <th class="py-2.5 px-3 bg-slate-50">Status</th>
-                            <th class="py-2.5 px-3 pr-5 text-right bg-slate-50">Action</th>
+                            <th class="py-2.5 px-3 pl-5 bg-slate-50">{{ _('Company Name') }}</th>
+                            <th class="py-2.5 px-3 bg-slate-50">{{ _('Survey') }}</th>
+                            <th class="py-2.5 px-3 bg-slate-50">{{ _('Submitted At') }}</th>
+                            <th class="py-2.5 px-3 bg-slate-50">{{ _('Status') }}</th>
+                            <th class="py-2.5 px-3 pr-5 text-right bg-slate-50">{{ _('Action') }}</th>
                         </tr>
                     </thead>
                     <tbody class="text-sm">
@@ -128,28 +128,28 @@
                                     <div class="w-7 h-7 rounded bg-blue-50 text-brand-blue border border-blue-100 flex items-center justify-center font-bold text-xs shrink-0">
                                         {{ response.company.company_name[0] if response.company else 'N' }}
                                     </div>
-                                    <span class="font-semibold text-slate-800 truncate max-w-[160px]">{{ response.company.company_name if response.company else 'Unknown' }}</span>
+                                    <span class="font-semibold text-slate-800 truncate max-w-[160px]">{{ response.company.company_name if response.company else _('Unknown') }}</span>
                                 </div>
                             </td>
-                            <td class="py-2.5 px-3 text-slate-600 truncate max-w-[180px]">{{ response.survey.title if response.survey else 'Unknown' }}</td>
+                            <td class="py-2.5 px-3 text-slate-600 truncate max-w-[180px]">{{ response.survey.title if response.survey else _('Unknown') }}</td>
                             <td class="py-2.5 px-3 text-slate-500 text-xs js-relative-time" data-timestamp="{{ response.submitted_at.isoformat() if response.submitted_at else '' }}">
                                 {% if response.submitted_at %}
                                     {{ response.submitted_at.strftime('%d %b %Y, %H:%M') }}
                                 {% else %}
-                                    N/A
+                                    {{ _('N/A') }}
                                 {% endif %}
                             </td>
                             <td class="py-2.5 px-3">
                                 {% if response.anomalies|length > 0 %}
-                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-red-50 text-red-600 border border-red-200">FLAGGED</span>
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-red-50 text-red-600 border border-red-200">{{ _('FLAGGED') }}</span>
                                 {% elif response.completion_status == 'complete' %}
-                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-blue-50 text-brand-blue border border-blue-200">COMPLETED</span>
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-blue-50 text-brand-blue border border-blue-200">{{ _('COMPLETED') }}</span>
                                 {% else %}
-                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">IN REVIEW</span>
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">{{ _('IN REVIEW') }}</span>
                                 {% endif %}
                             </td>
                             <td class="py-2.5 px-3 pr-5 text-right">
-                                <a href="#" class="text-slate-400 hover:text-brand-blue transition-colors">
+                                <a href="{{ url_for('surveys.survey_results', id=response.survey_id) }}" class="text-slate-400 hover:text-brand-blue transition-colors" title="{{ _('View Results') }}">
                                     <i class="far fa-eye"></i>
                                 </a>
                             </td>
@@ -158,7 +158,7 @@
                         <tr>
                             <td colspan="5" class="p-8 text-center text-sm text-slate-400">
                                 <i class="fas fa-inbox block text-2xl mb-2 text-slate-300"></i>
-                                No logs found inside the system index.
+                                {{ _('No logs found inside the system index.') }}
                             </td>
                         </tr>
                         {% endfor %}
@@ -168,13 +168,13 @@
             
             <div class="p-3 border-t border-slate-100 bg-white flex justify-between items-center rounded-b-xl shrink-0 select-none">
                 <span class="text-xs text-slate-500">
-                    Showing {{ ((page-1) * 4) + 1 if responses else 0 }} to {{ (page-1) * 4 + responses|length }} of {{ total_responses_count }} entries
+                    {{ _('Showing %(start)s to %(end)s of %(total)s entries', start=((page-1) * 4) + 1 if responses else 0, end=(page-1) * 4 + responses|length, total=total_responses_count) }}
                 </span>
                 <div class="flex items-center gap-1 whitespace-nowrap">
                     {% if page > 1 %}
-                        <a href="{{ url_for('dashboard.index', page=page-1) }}" class="px-2.5 py-1 text-xs border border-slate-200 rounded text-slate-600 hover:bg-slate-50">Prev</a>
+                        <a href="{{ url_for('dashboard.index', page=page-1) }}" class="px-2.5 py-1 text-xs border border-slate-200 rounded text-slate-600 hover:bg-slate-50">{{ _('Prev') }}</a>
                     {% else %}
-                        <button class="px-2.5 py-1 text-xs border border-slate-200 rounded text-slate-600 opacity-50 cursor-not-allowed" disabled>Prev</button>
+                        <button class="px-2.5 py-1 text-xs border border-slate-200 rounded text-slate-600 opacity-50 cursor-not-allowed" disabled>{{ _('Prev') }}</button>
                     {% endif %}
                     
                     {% if total_pages <= 5 %}
@@ -218,9 +218,9 @@
                     {% endif %}
                     
                     {% if page < total_pages %}
-                        <a href="{{ url_for('dashboard.index', page=page+1) }}" class="px-2.5 py-1 text-xs border border-slate-200 rounded text-slate-600 hover:bg-slate-50">Next</a>
+                        <a href="{{ url_for('dashboard.index', page=page+1) }}" class="px-2.5 py-1 text-xs border border-slate-200 rounded text-slate-600 hover:bg-slate-50">{{ _('Next') }}</a>
                     {% else %}
-                        <button class="px-2.5 py-1 text-xs border border-slate-200 rounded text-slate-600 opacity-50 cursor-not-allowed" disabled>Next</button>
+                        <button class="px-2.5 py-1 text-xs border border-slate-200 rounded text-slate-600 opacity-50 cursor-not-allowed" disabled>{{ _('Next') }}</button>
                     {% endif %}
                 </div>
             </div>
@@ -228,8 +228,8 @@
 
         <div class="bg-white rounded-xl border border-slate-100 shadow-sm p-4 w-1/3 flex flex-col min-h-0">
             <div class="mb-3 shrink-0">
-                <h3 class="text-base font-bold text-slate-800">Response Volume</h3>
-                <p class="text-xs text-slate-500 mt-0.5">Submissions over the last 30 days.</p>
+                <h3 class="text-base font-bold text-slate-800">{{ _('Response Volume') }}</h3>
+                <p class="text-xs text-slate-500 mt-0.5">{{ _('Submissions over the last 30 days.') }}</p>
             </div>
             <div class="flex-1 min-h-0 relative">
                 <canvas id="volumeChart"></canvas>
@@ -240,6 +240,15 @@
 </div>
 
 <script>
+    const i18n = {
+        justNow: {{ _('Just now')|tojson }},
+        minsAgo: {{ _('mins ago')|tojson }},
+        hour: {{ _('hour')|tojson }},
+        hours: {{ _('hours')|tojson }},
+        day: {{ _('day')|tojson }},
+        days: {{ _('days')|tojson }},
+        submissions: {{ _('Submissions')|tojson }}
+    };
     document.addEventListener("DOMContentLoaded", function () {
         const ctx = document.getElementById('volumeChart').getContext('2d');
         const volumeChart = new Chart(ctx, {
@@ -247,7 +256,7 @@
             data: {
                 labels: {{ daily_labels|tojson }},
                 datasets: [{
-                    label: 'Submissions',
+                    label: i18n.submissions,
                     data: {{ daily_data|tojson }},
                     backgroundColor: '#bfdbfe',
                     borderRadius: 4,
@@ -300,13 +309,13 @@
             const diffDays = Math.floor(diffHours / 24);
 
             if (diffMins < 1) {
-                el.textContent = 'Just now';
+                el.textContent = i18n.justNow;
             } else if (diffMins < 60) {
-                el.textContent = `${diffMins} mins ago`;
+                el.textContent = `${diffMins} ${i18n.minsAgo}`;
             } else if (diffHours < 24) {
-                el.textContent = `${diffHours} ${diffHours === 1 ? 'hour' : 'hours'} ago`;
+                el.textContent = `${diffHours} ${diffHours === 1 ? i18n.hour : i18n.hours} ago`;
             } else {
-                el.textContent = `${diffDays} ${diffDays === 1 ? 'day' : 'days'} ago`;
+                el.textContent = `${diffDays} ${diffDays === 1 ? i18n.day : i18n.days} ago`;
             }
         });
     });

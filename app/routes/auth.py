@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required
+from flask_babel import _
 from app import db
 from app.models.user import User
 
@@ -15,11 +16,11 @@ def login():
         user = User.query.filter_by(email=email).first()
         if user and user.check_password(password):
             login_user(user, remember=remember)
-            flash(f'Welcome back, {user.name}!', 'success')
+            flash(_('Welcome back, %(name)s!', name=user.name), 'success')
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('dashboard.index'))
         else:
-            flash('Invalid email or password.', 'danger')
+            flash(_('Invalid email or password.'), 'danger')
             return render_template('login.html', view='login')
 
     return render_template('login.html', view='login')
@@ -33,19 +34,19 @@ def register():
         confirm_password = request.form.get('confirm_password', '')
 
         if not name or not email or not password:
-            flash('All fields are required.', 'danger')
+            flash(_('All fields are required.'), 'danger')
             return render_template('login.html', view='signup')
 
         if password != confirm_password:
-            flash('Passwords do not match.', 'danger')
+            flash(_('Passwords do not match.'), 'danger')
             return render_template('login.html', view='signup')
 
         if len(password) < 6:
-            flash('Password must be at least 6 characters.', 'danger')
+            flash(_('Password must be at least 6 characters.'), 'danger')
             return render_template('login.html', view='signup')
 
         if User.query.filter_by(email=email).first():
-            flash('Email already registered.', 'danger')
+            flash(_('Email already registered.'), 'danger')
             return render_template('login.html', view='signup')
 
         user = User(name=name, email=email, role='user', active=True)
@@ -53,7 +54,7 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        flash('Account created successfully. Please log in.', 'success')
+        flash(_('Account created successfully. Please log in.'), 'success')
         return redirect(url_for('auth.login'))
 
     return render_template('login.html', view='signup')
@@ -62,5 +63,5 @@ def register():
 @login_required
 def logout():
     logout_user()
-    flash('You have been logged out.', 'info')
+    flash(_('You have been logged out.'), 'info')
     return redirect(url_for('auth.login'))

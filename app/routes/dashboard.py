@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
+from flask_babel import _
 from app import db
 from app.models.survey import Survey
 from app.models.response import Response, Company
@@ -113,5 +114,5 @@ def resolve_anomaly(id):
     anomaly.resolved_at = datetime.utcnow()
     anomaly.resolved_by = current_user.id
     db.session.commit()
-    flash('Anomaly marked as resolved.', 'success')
+    flash(_('Anomaly marked as resolved.'), 'success')
     return redirect(url_for('dashboard.anomalies'))

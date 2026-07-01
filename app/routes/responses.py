@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, abort, session
 from datetime import datetime
+from flask_babel import _
 from app import db
 from app.models.survey import Survey
 from app.models.response import Company, Response, Answer
@@ -28,7 +29,7 @@ def survey_password(token):
     if request.form.get('password') == survey.form_password:
         session[f'survey_{survey.id}_authenticated'] = True
         return redirect(url_for('responses.public_survey', token=token))
-    return render_template('form_password.html', survey=survey, error='Incorrect password. Please try again.')
+    return render_template('form_password.html', survey=survey, error=_('Incorrect password. Please try again.'))
 
 
 @responses.route('/survey/<token>/submit', methods=['POST'])
@@ -152,7 +153,7 @@ def submit_survey(token):
     response.completion_status = 'incomplete' if anomalies else 'complete'
 
     db.session.commit()
-    flash('Your response has been submitted successfully.', 'success')
+    flash(_('Your response has been submitted successfully.'), 'success')
     return redirect(url_for('responses.thank_you', token=token))
 
 

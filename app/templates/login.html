@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CCI SurveyHUB - Login & Register</title>
+    <title>CCI SurveyHUB - {{ _('Login & Register') }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -474,64 +474,60 @@
             <div class="forms-container">
                 
                 <div class="form-view {% if view != 'signup' %}active{% endif %}" id="login-form">
-                    <h1>Log in to your Account</h1>
-                    <p class="subtitle">Welcome back! Select method to log in:</p>
+                    <h1>{{ _('Log in to your Account') }}</h1>
+                    <p class="subtitle">{{ _('Welcome back! Select method to log in:') }}</p>
 
                     <div class="social-login">
                         <button class="social-btn">
                             <img src="https://www.vectorlogo.zone/logos/google/google-icon.svg" alt="Google"> 
                             Google
                         </button>
-                        <button class="social-btn">
-                            <i class="fa-brands fa-facebook" style="color: #1877f2; font-size: 18px;"></i> 
-                            Facebook
-                        </button>
                     </div>
 
-                    <div class="divider">or continue with email</div>
+                    <div class="divider">{{ _('or continue with email') }}</div>
 
                     <form method="POST" action="{{ url_for('auth.login') }}">
                         <div class="form-group">
                             <i class="fa-regular fa-envelope input-icon"></i>
-                            <input type="email" name="email" class="form-control" placeholder="Email" required>
+                            <input type="email" name="email" class="form-control" placeholder="{{ _('Email') }}" required>
                         </div>
                         <div class="form-group">
                             <i class="fa-solid fa-lock input-icon"></i>
-                            <input type="password" name="password" class="form-control" placeholder="Password" required>
+                            <input type="password" name="password" class="form-control" placeholder="{{ _('Password') }}" required>
                         </div>
                         <div class="form-options">
-                            <label style="display: flex; gap: 6px; color: var(--text-muted); cursor: pointer;"><input type="checkbox" name="remember"> Remember me</label>
-                            <a href="#" class="forgot-link">Forgot Password?</a>
+                            <label style="display: flex; gap: 6px; color: var(--text-muted); cursor: pointer;"><input type="checkbox" name="remember"> {{ _('Remember me') }}</label>
+                            <a href="#" class="forgot-link">{{ _('Forgot Password?') }}</a>
                         </div>
-                        <button type="submit" class="btn-submit">Log in</button>
+                        <button type="submit" class="btn-submit">{{ _('Log in') }}</button>
                     </form>
-                    <p class="toggle-link">Don't have an account? <a onclick="toggleForms('signup')">Create an account</a></p>
+                    <p class="toggle-link">{{ _("Don't have an account?") }} <a onclick="toggleForms('signup')">{{ _('Create an account') }}</a></p>
                 </div>
 
                 <div class="form-view {% if view == 'signup' %}active{% endif %}" id="signup-form">
-                    <h1>Create an Account</h1>
-                    <p class="subtitle">Join CCI SurveyHUB to start collecting data.</p>
+                    <h1>{{ _('Create an Account') }}</h1>
+                    <p class="subtitle">{{ _('Join CCI SurveyHUB to start collecting data.') }}</p>
 
                     <form method="POST" action="{{ url_for('auth.register') }}">
                         <div class="form-group">
                             <i class="fa-regular fa-user input-icon"></i>
-                            <input type="text" name="name" class="form-control" placeholder="Full Name" required>
+                            <input type="text" name="name" class="form-control" placeholder="{{ _('Full Name') }}" required>
                         </div>
                         <div class="form-group">
                             <i class="fa-regular fa-envelope input-icon"></i>
-                            <input type="email" name="email" class="form-control" placeholder="Work Email" required>
+                            <input type="email" name="email" class="form-control" placeholder="{{ _('Work Email') }}" required>
                         </div>
                         <div class="form-group">
                             <i class="fa-solid fa-lock input-icon"></i>
-                            <input type="password" name="password" class="form-control" placeholder="Create Password" required>
+                            <input type="password" name="password" class="form-control" placeholder="{{ _('Create Password') }}" required>
                         </div>
                         <div class="form-group">
                             <i class="fa-solid fa-shield-halved input-icon"></i>
-                            <input type="password" name="confirm_password" class="form-control" placeholder="Confirm Password" required>
+                            <input type="password" name="confirm_password" class="form-control" placeholder="{{ _('Confirm Password') }}" required>
                         </div>
-                        <button type="submit" class="btn-submit" style="margin-top: 10px;">Register Account</button>
+                        <button type="submit" class="btn-submit" style="margin-top: 10px;">{{ _('Register Account') }}</button>
                     </form>
-                    <p class="toggle-link">Already have an account? <a onclick="toggleForms('login')">Back to Log in</a></p>
+                    <p class="toggle-link">{{ _('Already have an account?') }} <a onclick="toggleForms('login')">{{ _('Back to Log in') }}</a></p>
                 </div>
 
             </div>
@@ -553,25 +549,25 @@
                             <div class="window-dot"></div>
                             <div class="window-dot"></div>
                             <div class="window-dot"></div>
-                            <div class="window-title">Survey Creator</div>
+                            <div class="window-title">{{ _('Survey Creator') }}</div>
                         </div>
                         <div class="content-item content-item-1">
-                            <p>Customer Feedback Form</p>
+                            <p>{{ _('Customer Feedback Form') }}</p>
                             <div class="content-tags"><div class="content-tag"></div><div class="content-tag" style="width:20px;"></div></div>
                         </div>
                         <div class="content-item content-item-2">
-                            <p>✓ Multiple Choice Matrix</p>
+                            <p>✓ {{ _('Multiple Choice Matrix') }}</p>
                             <div class="content-tags"><div class="content-tag" style="background:#a7f3d0;"></div></div>
                         </div>
                         <div class="content-item content-item-3">
-                            <p>✉ Contact Collection Field</p>
+                            <p>✉ {{ _('Contact Collection Field') }}</p>
                             <div class="content-tags"><div class="content-tag" style="background:#ddd6fe; width:45px;"></div></div>
                         </div>
                     </div>
                 </div>
                 <div class="slide-text">
-                    <h2>Create.</h2>
-                    <p>Build dynamic, logic-driven surveys in minutes using our intuitive drag-and-drop form builder.</p>
+                    <h2>{{ _('Create.') }}</h2>
+                    <p>{{ _('Build dynamic, logic-driven surveys in minutes using our intuitive drag-and-drop form builder.') }}</p>
                 </div>
             </div>
 
@@ -583,8 +579,8 @@
                     <div class="data-node node-right"><i class="fa-solid fa-tablet-screen-button"></i></div>
                 </div>
                 <div class="slide-text">
-                    <h2>Collect. Verify.</h2>
-                    <p>Deploy to the field instantly. Gather data offline and sync automatically with built-in GPS and photo verification.</p>
+                    <h2>{{ _('Collect. Verify.') }}</h2>
+                    <p>{{ _('Deploy to the field instantly. Gather data offline and sync automatically with built-in GPS and photo verification.') }}</p>
                 </div>
             </div>
 
@@ -598,8 +594,8 @@
                     </div>
                 </div>
                 <div class="slide-text">
-                    <h2>Analyse.</h2>
-                    <p>Transform raw data into actionable insights instantly with customizable, real-time dashboards.</p>
+                    <h2>{{ _('Analyse.') }}</h2>
+                    <p>{{ _('Transform raw data into actionable insights instantly with customizable, real-time dashboards.') }}</p>
                 </div>
             </div>
         </div>

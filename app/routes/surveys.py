@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, abort
 from flask_login import login_required, current_user
+from flask_babel import _
 from app import db
 from app.models.survey import Survey, Block, Question, Choice
 from app.models.response import Response, Answer
@@ -51,7 +52,7 @@ def survey_list():
 def create_survey():
     """Create a draft survey and redirect to the builder."""
     survey = Survey(
-        title='Untitled Survey',
+        title=_('Untitled Survey'),
         description='',
         objective='',
         target_audience='',
@@ -60,7 +61,7 @@ def create_survey():
     )
     db.session.add(survey)
     db.session.commit()
-    flash('Survey created. You can now build it.', 'success')
+    flash(_('Survey created. You can now build it.'), 'success')
     return redirect(url_for('surveys.survey_builder', id=survey.id))
 
 @surveys.route('/surveys/<int:id>/builder')
@@ -82,7 +83,7 @@ def update_survey(id):
     survey.status = request.form.get('status', survey.status).strip()
     survey.form_password = request.form.get('form_password', '').strip() or None
     db.session.commit()
-    flash('Survey settings saved.', 'success')
+    flash(_('Survey settings saved.'), 'success')
     return redirect(url_for('surveys.survey_builder', id=survey.id))
 
 @surveys.route('/surveys/<int:id>/blocks/add', methods=['POST'])
@@ -92,7 +93,7 @@ def add_block(id):
     survey = Survey.query.get_or_404(id)
     title = request.form.get('title', '').strip()
     if not title:
-        flash('Block title is required.', 'danger')
+        flash(_('Block title is required.'), 'danger')
         return redirect(url_for('surveys.survey_builder', id=survey.id))
     
     position = Block.query.filter_by(survey_id=survey.id).count() + 1
@@ -103,7 +104,7 @@ def add_block(id):
     )
     db.session.add(block)
     db.session.commit()
-    flash('Block added.', 'success')
+    flash(_('Block added.'), 'success')
     return redirect(url_for('surveys.survey_builder', id=survey.id))
 
 @surveys.route('/blocks/<int:id>/questions/add', methods=['POST'])
@@ -113,7 +114,7 @@ def add_question(id):
     block = Block.query.get_or_404(id)
     text = request.form.get('text', '').strip()
     if not text:
-        flash('Question text is required.', 'danger')
+        flash(_('Question text is required.'), 'danger')
         return redirect(url_for('surveys.survey_builder', id=block.survey_id))
     
     position = Question.query.filter_by(block_id=block.id).count() + 1
@@ -126,7 +127,7 @@ def add_question(id):
     )
     db.session.add(question)
     db.session.commit()
-    flash('Question added.', 'success')
+    flash(_('Question added.'), 'success')
     return redirect(url_for('surveys.survey_builder', id=block.survey_id))
 
 @surveys.route('/questions/<int:id>/choices/add', methods=['POST'])
@@ -136,7 +137,7 @@ def add_choice(id):
     question = Question.query.get_or_404(id)
     choice_text = request.form.get('choice_text', '').strip()
     if not choice_text:
-        flash('Choice text is required.', 'danger')
+        flash(_('Choice text is required.'), 'danger')
         return redirect(url_for('surveys.survey_builder', id=question.block.survey_id))
     
     position = Choice.query.filter_by(question_id=question.id).count() + 1
@@ -147,7 +148,7 @@ def add_choice(id):
     )
     db.session.add(choice)
     db.session.commit()
-    flash('Choice added.', 'success')
+    flash(_('Choice added.'), 'success')
     return redirect(url_for('surveys.survey_builder', id=question.block.survey_id))
 
 @surveys.route('/surveys/<int:id>/delete', methods=['POST'])
@@ -158,12 +159,12 @@ def delete_survey(id):
     # Check if survey has responses
     response_count = Response.query.filter_by(survey_id=survey.id).count()
     if response_count > 0:
-        flash('Cannot delete survey with existing responses.', 'danger')
+        flash(_('Cannot delete survey with existing responses.'), 'danger')
         return redirect(url_for('surveys.survey_list'))
     
     db.session.delete(survey)
     db.session.commit()
-    flash('Survey deleted successfully.', 'success')
+    flash(_('Survey deleted successfully.'), 'success')
     return redirect(url_for('surveys.survey_list'))
 
 @surveys.route('/surveys/<int:id>/preview')
@@ -180,7 +181,7 @@ def publish_survey(id):
     survey = Survey.query.get_or_404(id)
     
     if survey.status == 'published':
-        flash('Survey is already published.', 'info')
+        flash(_('Survey is already published.'), 'info')
         return redirect(url_for('surveys.survey_builder', id=survey.id))
     
     survey.status = 'published'
@@ -188,7 +189,7 @@ def publish_survey(id):
     db.session.commit()
     
     public_url = url_for('responses.public_survey', token=survey.public_token, _external=True)
-    flash(f'Survey published successfully! Public link: {public_url}', 'success')
+    flash(_('Survey published successfully! Public link: %(url)s', url=public_url), 'success')
     return redirect(url_for('surveys.survey_builder', id=survey.id))
 
 @surveys.route('/surveys/<int:id>/edit')

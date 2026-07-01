@@ -63,6 +63,12 @@ body {
     font-size: 1.2rem;
 }
 
+.brand-logo {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+}
+
 .brand-text-box {
     display: flex;
     flex-direction: column;

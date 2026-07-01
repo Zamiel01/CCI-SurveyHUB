@@ -1,5 +1,6 @@
 import pandas as pd
 from io import BytesIO
+from flask_babel import _
 from openpyxl.styles import Font
 from app import db
 from app.models.response import Response, Answer, Company
@@ -21,12 +22,12 @@ def export_responses_csv(survey_id):
     for response in responses:
         company = Company.query.get(response.company_id)
         row = {
-            'Company Name': company.company_name if company else '',
-            'SIRET': company.siret if company else '',
-            'Email': company.email if company else '',
-            'Phone': company.phone if company else '',
-            'Submitted At': response.submitted_at.strftime('%Y-%m-%d %H:%M:%S') if response.submitted_at else '',
-            'Status': response.completion_status
+            _('Company Name'): company.company_name if company else '',
+            _('SIRET'): company.siret if company else '',
+            _('Email'): company.email if company else '',
+            _('Phone'): company.phone if company else '',
+            _('Submitted At'): response.submitted_at.strftime('%Y-%m-%d %H:%M:%S') if response.submitted_at else '',
+            _('Status'): response.completion_status
         }
         
         for question in questions:
@@ -61,12 +62,12 @@ def export_responses_excel(survey_id):
     for response in responses:
         company = Company.query.get(response.company_id)
         row = {
-            'Company Name': company.company_name if company else '',
-            'SIRET': company.siret if company else '',
-            'Email': company.email if company else '',
-            'Phone': company.phone if company else '',
-            'Submitted At': response.submitted_at.strftime('%Y-%m-%d %H:%M:%S') if response.submitted_at else '',
-            'Status': response.completion_status
+            _('Company Name'): company.company_name if company else '',
+            _('SIRET'): company.siret if company else '',
+            _('Email'): company.email if company else '',
+            _('Phone'): company.phone if company else '',
+            _('Submitted At'): response.submitted_at.strftime('%Y-%m-%d %H:%M:%S') if response.submitted_at else '',
+            _('Status'): response.completion_status
         }
         
         for question in questions:
@@ -83,9 +84,9 @@ def export_responses_excel(survey_id):
     output = BytesIO()
     
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
-        df.to_excel(writer, index=False, sheet_name='Responses')
+        df.to_excel(writer, index=False, sheet_name=_('Responses'))
         workbook = writer.book
-        worksheet = writer.sheets['Responses']
+        worksheet = writer.sheets[_('Responses')]
         
         bold_font = Font(bold=True)
         for cell in worksheet[1]:
@@ -107,13 +108,13 @@ def export_anomalies_csv():
         resolved_by_user = User.query.get(anomaly.resolved_by) if anomaly.resolved_by else None
         
         row = {
-            'Company Name': company.company_name if company else '',
-            'Field': anomaly.field_name,
-            'Issue Type': anomaly.issue_type,
-            'Status': anomaly.status,
-            'Detected At': anomaly.created_at.strftime('%Y-%m-%d %H:%M:%S') if anomaly.created_at else '',
-            'Resolved At': anomaly.resolved_at.strftime('%Y-%m-%d %H:%M:%S') if anomaly.resolved_at else '',
-            'Resolved By': resolved_by_user.name if resolved_by_user else ''
+            _('Company Name'): company.company_name if company else '',
+            _('Field'): anomaly.field_name,
+            _('Issue Type'): anomaly.issue_type,
+            _('Status'): anomaly.status,
+            _('Detected At'): anomaly.created_at.strftime('%Y-%m-%d %H:%M:%S') if anomaly.created_at else '',
+            _('Resolved At'): anomaly.resolved_at.strftime('%Y-%m-%d %H:%M:%S') if anomaly.resolved_at else '',
+            _('Resolved By'): resolved_by_user.name if resolved_by_user else ''
         }
         rows.append(row)
     
@@ -122,5 +123,5 @@ def export_anomalies_csv():
     df.to_csv(output, index=False, encoding='utf-8-sig')
     output.seek(0)
     
-    filename = "anomalies_report.csv"
+    filename = _("anomalies_report.csv")
     return output, filename
